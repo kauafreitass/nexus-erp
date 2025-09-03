@@ -21,6 +21,9 @@ if (!isset($_SESSION['auth'])) {
 
 
 
+
+
+
 <?php view('components/footer'); ?>
 
 </body>

@@ -17,7 +17,6 @@ spl_autoload_register(function ($class) {
 
 Router::get('/', [ErpController::class, 'index']);
 Router::get('/home', [ErpController::class, 'index']);
-
 // Auth
 
 Router::get('/login', [AuthController::class, 'showLogin']);
@@ -25,7 +24,5 @@ Router::get('/login', [AuthController::class, 'showLogin']);
 Router::get('/register', [AuthController::class, 'showRegister']);
 
 Router::get('/forgot-password', [AuthController::class, 'showForgotPassword']);
-
-Router::get('/redirect', [AuthController::class, 'showGoogleRedirect']);
 
 Router::get('/logout', [AuthController::class, 'showLogout']);
