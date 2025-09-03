@@ -16,7 +16,7 @@ spl_autoload_register(function ($class) {
 
 
 Router::get('/', [ErpController::class, 'index']);
-Router::get('/home', [ErpController::class, 'index']);
+Router::get('/home', [ErpController::class, 'home']);
 
 // Auth
 
