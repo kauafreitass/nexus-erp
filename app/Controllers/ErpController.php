@@ -10,6 +10,8 @@ class ErpController
         view('erp/index');
     }
 
-
+    public function home(){
+        view('home');
+    }
 
 }
