@@ -92,7 +92,6 @@ if (!isset($_SESSION['auth'])) {
             font-size: 40px;
             margin-top: 70px;
             display: flex;
-
             text-align: center;
         }
 
@@ -136,9 +135,9 @@ if (!isset($_SESSION['auth'])) {
         <div class="botoes">
             <a href="#">Sobre</a>
             <a href="#">Contato</a>
-            <a class='decoracao' href="app\Views\auth\login.php">Entrar</a>
+            <a class='decoracao' href="login">Entrar</a>
         </div>
-        
+
 
     </navbar>
 
