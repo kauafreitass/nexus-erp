@@ -26,6 +26,4 @@ Router::get('/register', [AuthController::class, 'showRegister']);
 
 Router::get('/forgot-password', [AuthController::class, 'showForgotPassword']);
 
-Router::get('/redirect', [AuthController::class, 'showGoogleRedirect']);
-
 Router::get('/logout', [AuthController::class, 'showLogout']);
