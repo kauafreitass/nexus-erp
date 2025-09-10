@@ -127,14 +127,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         .titulo2 {
             font-size: 40px;
         }
-    .paragrafo{
-        font-size: 25px;
-        width: 480px;
-        padding: 15px;
-        color: white;
-        opacity: 0.8;
-    
-    }
+
+        .paragrafo {
+            font-size: 25px;
+            width: 480px;
+            padding: 15px;
+            color: white;
+            opacity: 0.8;
+
+        }
     </style>
 </head>
 
