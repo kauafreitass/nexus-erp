@@ -6,7 +6,7 @@ use App\Models\AuthModel;
 
 class AuthController
 {
-    public AuthModel $model;
+    private AuthModel $model;
 
     public function __construct()
     {
@@ -37,24 +37,27 @@ class AuthController
     }
 
 
-    public function showLogout()
+    public function showLogout(): void
     {
         session_destroy();
         header('Location: login');
-        exit;
     }
 
 
-    public function storeAccount($name, $email, $password, $gender, $birthdate)
+    public function storeAccount($name, $email, $password, $gender, $birthdate): void
     {
         $this->model->storeAccount($name, $email, $password, $gender, $birthdate);
     }
 
 
 
-    public function login($email, $password)
+    public function login($email, $password): void
     {
         $this->model->login($email, $password);
     }
-}
 
+    public function forgotPassword($email, $new_password): void
+    {
+        $this->model->forgotPassword($email, $new_password);
+    }
+}
