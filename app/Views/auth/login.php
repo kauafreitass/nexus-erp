@@ -136,6 +136,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             opacity: 0.8;
 
         }
+        form{
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+        }
     </style>
 </head>
 
@@ -149,10 +155,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <div class="titulo1">
                     <h1>Login</h1>
                 </div>
-                <input type="text" placeholder="E-mail">
-                <input type="password" placeholder="Senha">
-                <p class="esqueci-senha"><a href="forgot-password">Esqueci minha senha</a></p>
                 <form method="POST">
+                    <input type="text" placeholder="E-mail">
+                    <input type="password" placeholder="Senha">
+                    <p class="esqueci-senha"><a href="forgot-password">Esqueci minha senha</a></p>
+
                     <button type="submit">Entrar</button>
                 </form>
             </div>

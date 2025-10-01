@@ -147,7 +147,7 @@ if (!isset($_SESSION['auth'])) {
 
             <p class="texto-grande">Administre seu negócio com o melhor ERP do mercado</p>
             <p class="texto-pequeno">+ de 5 mil usuários fiéis e satisfeitos</p>
-            <a class="botao" href="#">Crie uma conta</a>
+            <a class="botao" href="forgot-password">Crie uma conta</a>
         </div>
 
 
