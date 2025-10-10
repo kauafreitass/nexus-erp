@@ -21,7 +21,7 @@ class ErpController
 
     public function home(): void
     {
-        view('home');
+        view('erp/home');
     }
 
     public function salesChart($user)
