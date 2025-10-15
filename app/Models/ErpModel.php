@@ -14,7 +14,7 @@ class ErpModel
         $this->pdo = $database->getConnection();
     }
 
-    public function salesChart($user)
+    public function getSalesChart($user)
     {
         $sql = "SELECT * FROM sales_orders WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
@@ -23,7 +23,7 @@ class ErpModel
         return $stmt->fetch();
     }
 
-    public function customersChart($user)
+    public function getCustomersChart($user)
     {
         $sql = "SELECT * FROM customers WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
@@ -31,4 +31,12 @@ class ErpModel
         $stmt->execute();
         return $stmt->fetch();
     }
+
+    public function getStockChart($user)
+    {
+        $sql = "SELECT * FROM products WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':id', $user["id"]);
+    }
+
 }

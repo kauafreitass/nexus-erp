@@ -16,17 +16,17 @@ class ErpController
 
     public function index(): void
     {
-        view('erp/index');
-    }
-
-    public function home(): void
-    {
         view('home');
     }
 
-    public function salesChart($user)
+    public function dashboard(): void
     {
-        $this->model->salesChart($user);
+        view('erp/dashboard');
+    }
+
+    public function getSalesChart($user)
+    {
+        $this->model->getSalesChart($user);
     }
 
 }
