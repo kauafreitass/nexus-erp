@@ -16,12 +16,12 @@ class ErpController
 
     public function index(): void
     {
-        view('home');
+        view('erp/index');
     }
 
     public function dashboard(): void
     {
-        view('erp/dashboard');
+        view('erp/home');
     }
 
     public function getSalesChart($user)
