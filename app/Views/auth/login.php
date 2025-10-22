@@ -136,11 +136,22 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             opacity: 0.8;
 
         }
-        form{
+
+        form {
             display: flex;
             justify-content: center;
             text-align: center;
             flex-direction: column;
+        }
+           .cadastrar {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .conta{
+            font-size: 25px;
+        }
+        .texto5{
+            color: #2458BF;
         }
     </style>
 </head>
@@ -162,6 +173,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
                     <button type="submit">Entrar</button>
                 </form>
+                <div class="cadastrar">
+                    <p class="conta">Não tem uma conta?</p>
+                    <p><a href="register" class="texto5">Clique aqui para criar a sua!</a></p>
+                </div>
             </div>
         </div>
         <div class="direita">

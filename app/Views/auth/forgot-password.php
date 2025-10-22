@@ -60,7 +60,8 @@
     }
 
     .esquerda p {
-      font-size: 27px;
+      font-size: 27
+      px;
       line-height: 1.5;
       max-width: 600px;
     }
