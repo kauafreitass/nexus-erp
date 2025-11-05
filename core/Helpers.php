@@ -38,5 +38,34 @@ function view($name, $data = [])
 function asset($path)
 {
     $base = dirname($_SERVER['SCRIPT_NAME']);
+    // Garante que a base não seja apenas uma barra se estiver na raiz
+    $base = ($base === '/' || $base === '\\') ? '' : $base;
     return rtrim($base, '/') . '/' . ltrim($path, '/');
+}
+
+/**
+ * Gera uma tag <script> para um arquivo JavaScript.
+ *
+ * @param string $path O caminho para o arquivo JS a partir da pasta de assets.
+ * @param array  $attributes Atributos HTML adicionais para a tag (ex: ['defer' => true]).
+ */
+function js($path, $attributes = [])
+{
+    // Usa a função 'asset' existente para obter a URL correta
+    $url = asset($path);
+
+    $attributeString = '';
+    // Constrói a string de atributos a partir do array
+    foreach ($attributes as $key => $value) {
+        // Para atributos booleanos como 'defer', só precisamos da chave
+        if ($value === true) {
+            $attributeString .= " {$key}";
+        } else {
+            // Para outros atributos como 'type="module"'
+            $attributeString .= " {$key}=\"{$value}\"";
+        }
+    }
+
+    // Imprime a tag <script> completa
+    echo "<script src=\"{$url}\"{$attributeString}></script>\n";
 }

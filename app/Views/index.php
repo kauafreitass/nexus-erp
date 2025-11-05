@@ -1,3 +1,9 @@
+<?php
+if (!isset($_SESSION['auth'])) {
+    $_SESSION['auth'] = 'notAuthenticated';
+}
+?>
+
 <!doctype html>
 <html lang="pt-br">
 

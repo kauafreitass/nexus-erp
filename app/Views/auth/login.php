@@ -167,8 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <h1>Login</h1>
                 </div>
                 <form method="POST">
-                    <input type="text" placeholder="E-mail">
-                    <input type="password" placeholder="Senha">
+                    <input type="text" name="email" placeholder="E-mail">
+                    <input type="password" name="password" placeholder="Senha">
                     <p class="esqueci-senha"><a href="forgot-password">Esqueci minha senha</a></p>
 
                     <button type="submit">Entrar</button>

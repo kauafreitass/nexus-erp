@@ -12,6 +12,7 @@ class AuthController
     {
         if (!isset($_SESSION['auth'])) {
         $_SESSION['auth'] = "notAuthenticated";
+        header('Location: login');
     }
         $this->model = new AuthModel();
     }
@@ -41,6 +42,13 @@ class AuthController
     {
         session_destroy();
         header('Location: login');
+    }
+
+    public function showAccount(): void
+    {
+        view('auth/account', [
+            'title' => 'Minha Conta - Nexus ERP'
+        ]);
     }
 
 

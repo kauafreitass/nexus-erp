@@ -14,9 +14,13 @@ spl_autoload_register(function ($class) {
     echo "Trying to load: " . $class . "\n";
 });
 
+// Routes
 
 Router::get('/', [ErpController::class, 'index']);
-Router::get('/home', [ErpController::class, 'dashboard']);
+
+// ERP
+
+Router::get('/dashboard', [ErpController::class, 'dashboard']);
 
 // Auth
 
@@ -27,3 +31,7 @@ Router::get('/register', [AuthController::class, 'showRegister']);
 Router::get('/forgot-password', [AuthController::class, 'showForgotPassword']);
 
 Router::get('/logout', [AuthController::class, 'showLogout']);
+
+// Settings
+
+Router::get('/account', [AuthController::class, 'showAccount']);
