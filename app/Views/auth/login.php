@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 <body>
     <div class="logo">
-        <img src="images/nexus-logo.png" alt="Logo">
+        <img src="../images/nexus-logo.png" alt="Logo">
     </div>
     <div class="container">
         <div class="esquerda">
@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 </form>
                 <div class="cadastrar">
                     <p class="conta">Não tem uma conta?</p>
-                    <p><a href="register" class="texto5">Clique aqui para criar a sua!</a></p>
+                    <p><a href="register.php" class="texto5">Clique aqui para criar a sua!</a></p>
                 </div>
             </div>
         </div>
