@@ -1,11 +1,3 @@
-<?php
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $controller = new \App\Controllers\AuthController();
-    $controller->storeAccount($_POST['name'], $_POST['email'], $_POST['password'], $_POST['gender'], $_POST['birthdate']);
-}
-
-?>
-
 <!doctype html>
 <html lang="pt-br">
 
@@ -47,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
         .esquerda {
-            flex:0.4;
+            flex: 0.4;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -119,7 +111,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             font-size: 25px;
 
         }
-        p{
+
+        p {
             font-size: 30px;
         }
     </style>
@@ -135,18 +128,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <div class="titulo1">
                     <h1>Cadastro</h1>
                 </div>
-                <input type="text" placeholder="Nome">
-                <input type="text" placeholder="Razão Social">
-                <input type="text" placeholder="E-mail">
-                <input type="password" placeholder="Senha">
-                <input type="text" placeholder="CNPJ">
-                <form method="POST">
-                    <button type="submit">Cadastrar</button>
+                <form class="caixa" method="POST" action="register">
+                <input type="text" name="name" placeholder="Nome">
+                <input type="text" name="business_name" placeholder="Razão Social">
+                <input type="text" name="email" placeholder="E-mail">
+                <input type="password" name="password" placeholder="Senha">
+                <input type="text" name="document_number" placeholder="CNPJ">
+                <input type="number" name="phone" placeholder="Telefone">
+                <button type="submit">Cadastrar</button>
                 </form>
 
                 <div class="cadastrar">
                     <p>Já tem um cadastro?</p>
-                    <p class="texto"><a href="/login">Clique aqui para entrar no seu sistema</a></p>
+                    <p class="texto"><a href="login">Clique aqui para entrar no seu sistema</a></p>
                 </div>
             </div>
         </div>

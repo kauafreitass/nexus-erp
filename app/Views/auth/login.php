@@ -1,19 +1,10 @@
-<?php
-
-use App\Controllers\AuthController;
-
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $controller = new AuthController();
-    $controller->login($_POST['email'], $_POST['password']);
-}
-?>
-
 <!doctype html>
 <html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" href="images/nexus-logo.png" type="image/png">
     <title>Login</title>
@@ -143,22 +134,41 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             text-align: center;
             flex-direction: column;
         }
-           .cadastrar {
+
+        .cadastrar {
             text-align: center;
             margin-top: 20px;
         }
-        .conta{
+
+        .conta {
             font-size: 25px;
         }
-        .texto5{
+
+        .texto5 {
             color: #2458BF;
+        }
+
+        .error {
+            color: white;
+            text-align: center;
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .error p {
+            color: white;
+            padding: 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            background-color: rgba(255, 69, 69, 1);
         }
     </style>
 </head>
 
 <body>
     <div class="logo">
-        <img src="../images/nexus-logo.png" alt="Logo">
+        <img src="images/nexus-logo.png" alt="Logo">
     </div>
     <div class="container">
         <div class="esquerda">
@@ -166,23 +176,29 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <div class="titulo1">
                     <h1>Login</h1>
                 </div>
-                <form method="POST">
+                <form method="POST" action="login">
                     <input type="text" name="email" placeholder="E-mail">
                     <input type="password" name="password" placeholder="Senha">
+                    <?php if (isset($_SESSION['error'])): ?>
+                    <div class="error">
+                        <p><?= $_SESSION['error'] ?? '' ?></p>
+                    </div>
+                    <?php unset($_SESSION['error']); endif; ?>
                     <p class="esqueci-senha"><a href="forgot-password">Esqueci minha senha</a></p>
 
                     <button type="submit">Entrar</button>
                 </form>
                 <div class="cadastrar">
                     <p class="conta">Não tem uma conta?</p>
-                    <p><a href="register.php" class="texto5">Clique aqui para criar a sua!</a></p>
+                    <p><a href="register" class="texto5">Clique aqui para criar a sua!</a></p>
                 </div>
             </div>
         </div>
         <div class="direita">
             <div class="texto2">
                 <h1 class="titulo2">Que bom ter você aqui!</h1>
-                <p class="paragrafo">Entre com seus dados para acessar o Nexus, um sistema que transforma negócios em gigantes do e-commerce.</p>
+                <p class="paragrafo">Entre com seus dados para acessar o Nexus, um sistema que transforma negócios em
+                    gigantes do e-commerce.</p>
             </div>
         </div>
     </div>

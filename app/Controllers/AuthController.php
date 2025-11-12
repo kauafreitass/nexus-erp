@@ -1,71 +1,202 @@
 <?php
-
 namespace App\Controllers;
 
 use App\Models\AuthModel;
+use App\Models\PermissionModel;
+use App\Models\CompanyModel; // Precisa do CompanyModel
+use Exception;
 
-class AuthController
+class AuthController extends BaseController // <-- 1. HERDA DO BASECONTROLLER
 {
     private AuthModel $model;
+    private PermissionModel $permissionModel;
+    private CompanyModel $companyModel; 
 
     public function __construct()
     {
-        if (!isset($_SESSION['auth'])) {
-        $_SESSION['auth'] = "notAuthenticated";
-        header('Location: login');
-    }
         $this->model = new AuthModel();
+        $this->permissionModel = new PermissionModel();
+        $this->companyModel = new CompanyModel(); 
     }
 
+    // --- MÉTODOS DE EXIBIÇÃO DE VIEW ---
 
     public function showLogin(): void
     {
-        view('auth/login', [
-            'title' => 'Entrar - Nexus ERP'
-        ]);
+        $this->checkGuest(); 
+        view('auth/login');
     }
 
     public function showRegister(): void
     {
-        view('auth/register', [
-            'title' => 'Cadastre-se - Nexus ERP'
-        ]);
+        $this->checkGuest(); 
+        view('auth/register');
     }
 
     public function showForgotPassword(): void
     {
-        view('auth/forgot-password');
+        $this->checkGuest(); 
+        view('auth/forgot_password');
     }
-
 
     public function showLogout(): void
     {
+        $this->checkAuth(); 
         session_destroy();
-        header('Location: login');
+        header('Location: /nexus-erp/public/login');
+        exit;
     }
 
     public function showAccount(): void
     {
+        $this->checkAuth(); 
+        $companyId = $_SESSION['company_id'];
+        
+        // Busca os dados da EMPRESA para preencher o formulário
+        $company = $this->companyModel->findById($companyId); 
+        
         view('auth/account', [
-            'title' => 'Minha Conta - Nexus ERP'
+            'activePage' => 'account',
+            'company' => $company // Passa os dados da empresa para a view
         ]);
     }
 
+    // --- MÉTODOS DE PROCESSAMENTO DE FORMULÁRIO (HANDLE) ---
 
-    public function storeAccount($name, $email, $password, $gender, $birthdate): void
+    public function handleRegister(): void
     {
-        $this->model->storeAccount($name, $email, $password, $gender, $birthdate);
+        $this->checkGuest(); 
+
+        $name = $_POST['name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+        // O $document_number vem do formulário de registro
+        $document_number = $_POST['document_number'] ?? ''; 
+        
+        try {
+            // Usa o método de registro que cria a empresa e o usuário admin
+            $this->model->registerNewCompanyAndAdminUser($name, $email, $password, $document_number);
+            $this->redirectWithSuccess("/nexus-erp/public/login", "Sua empresa e conta de administrador foram criadas com sucesso! Faça login.");
+
+        } catch (Exception $e) {
+            $this->redirectWithError("/nexus-erp/public/register", $e->getMessage());
+        }
     }
 
-
-
-    public function login($email, $password): void
+    public function handleLogin($internalCall = false): void
     {
-        $this->model->login($email, $password);
+        if (!$internalCall) {
+            $this->checkGuest(); 
+        }
+
+        $email = $_POST['email'] ?? '';
+        $password = $_POST['password'] ?? '';
+
+        try {
+            $user = $this->model->login($email, $password);
+            $permissions = $this->permissionModel->getPermissionsForUser($user['id']);
+            
+            $_SESSION['user'] = $user;
+            $_SESSION['auth'] = 'authenticated';
+            $_SESSION['permissions'] = $permissions;
+            $_SESSION['company_id'] = $user['company_id']; 
+            $_SESSION['role_name'] = $user['role_name'];   
+
+            $this->redirectWithSuccess("/nexus-erp/public/dashboard", "Login bem-sucedido! Bem-vindo(a), " . htmlspecialchars($user['name']) . ".");
+
+        } catch (Exception $e) {
+            $this->redirectWithError("/nexus-erp/public/login", $e->getMessage());
+        }
     }
 
-    public function forgotPassword($email, $new_password): void
+    public function handleForgotPassword(): void
     {
-        $this->model->forgotPassword($email, $new_password);
+        $this->checkGuest(); 
+        // Lógica de recuperação de senha...
+        $this->redirectWithError("/nexus-erp/public/forgot-password", "Funcionalidade não implementada.");
+    }
+
+    /**
+     * Rota de atualização principal para a página "Minha Conta".
+     * Lida com todas as ações dos modais.
+     */
+    public function update(): void
+    {
+        $this->checkAuth(); 
+
+        $userId = $_SESSION['user']['id'];
+        $companyId = $_SESSION['company_id'];
+        $action = $_POST['action'] ?? '';
+        $currentPassword = $_POST['current_password'] ?? '';
+
+        // Senha atual é obrigatória para TODAS as alterações
+        if (empty($currentPassword)) {
+            $this->redirectWithError("/nexus-erp/public/account", "A senha atual é obrigatória para confirmar as alterações.");
+            return;
+        }
+
+        try {
+            $message = ""; 
+
+            switch ($action) {
+                case 'update_password':
+                    $newPassword = $_POST['new_password'] ?? '';
+                    $confirmPassword = $_POST['confirm_password'] ?? '';
+                    $this->model->updatePassword($userId, $currentPassword, $newPassword, $confirmPassword);
+                    $message = "Senha atualizada com sucesso!";
+                    break;
+                
+                case 'update_email':
+                    $newEmail = $_POST['new_email'] ?? '';
+                    $this->model->updateEmail($userId, $newEmail, $currentPassword);
+                    $message = "Email de acesso atualizado com sucesso!";
+                    break;
+                
+                case 'update_name':
+                    $newName = $_POST['new_name'] ?? '';
+                    $this->model->updateName($userId, $newName, $currentPassword);
+                    $message = "Nome de usuário atualizado com sucesso!";
+                    break;
+                
+                // Esta é a ação que estava a falhar
+                case 'update_company_data': 
+                    // Apenas Admins podem mudar dados da empresa
+                    $this->checkPermission('settings_manage'); 
+                    
+                    // O CompanyModel->update não precisa da senha, mas a verificamos
+                    $this->companyModel->update($companyId, $_POST); 
+                    $message = "Dados da empresa atualizados com sucesso!";
+                    break;
+
+                default:
+                    // Causa do erro "Ação desconhecida"
+                    throw new Exception("Ação de atualização desconhecida ou não especificada.");
+            }
+            
+            // Se a atualização deu certo, atualiza a sessão
+            $this->updateSessionData($userId); 
+            $this->redirectWithSuccess("/nexus-erp/public/account", $message);
+
+        } catch (Exception $e) {
+            $this->redirectWithError("/nexus-erp/public/account", $e->getMessage());
+        }
+    }
+
+    /**
+     * Atualiza os dados do usuário na sessão após uma alteração.
+     */
+    private function updateSessionData($userId): void
+    {
+        try {
+            $updatedUser = $this->model->findUserById($userId);
+            if ($updatedUser) {
+                // Preserva as permissões, atualiza o resto
+                $_SESSION['user'] = $updatedUser;
+                $_SESSION['company_id'] = $updatedUser['company_id'];
+                $_SESSION['role_name'] = $updatedUser['role_name'];
+            }
+        } catch (Exception $e) {
+            error_log("Erro ao atualizar dados da sessão para o usuário $userId: " . $e->getMessage());
+        }
     }
 }

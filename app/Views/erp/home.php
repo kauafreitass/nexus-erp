@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="<?= asset('css/home.css'); ?>">
     <script src="https://kit.fontawesome.com/904bf533d7.js" crossorigin="anonymous"></script>
     <link rel="icon" href="images/nexus-logo.png" type="image/png">
-    <title>Landing Page</title>
+    <title>Página inicial</title>
     <style>
         body {
             background-image: url('images/Imagem Landing Page.jpg');

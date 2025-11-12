@@ -1,5 +1,105 @@
+<?php
+// A variável $activePage é recebida da função view()
+$activePage = $activePage ?? '';
+
+// Para verificar permissões
+$permissions = $_SESSION['permissions'] ?? [];
+
+// Função auxiliar para verificar permissão
+function hasPermission($permissionName, $permissionsArray)
+{
+    return in_array($permissionName, $permissionsArray);
+}
+?>
+
+<body>
+    <nav class="menu-lateral">
+        <div class="area-logo">
+            <a href="/nexus-erp/public/dashboard"><img src="<?= asset('images/nexus-logo.png') ?>"
+                    alt="Logo do sistema"></a>
+        </div>
+
+        <ul class="lista-opcoes">
+            <li class="item-opcao">
+                <a href="/nexus-erp/public/dashboard"
+                    class="link-opcao <?php echo ($activePage === 'dashboard') ? 'active' : ''; ?>">Dashboard</a>
+            </li>
+
+            <?php
+            $isVendasActive = in_array($activePage, ['sales', 'nfe']);
+            ?>
+            <li class="item-opcao <?php echo $isVendasActive ? 'active' : ''; ?>">
+                <span class="link-opcao">Vendas <span class="arrow"></span></span>
+                <div class="submenu">
+                    <?php if (hasPermission('sales_orders_view', $permissions)): ?>
+                        <a href="/nexus-erp/public/sales"
+                            class="link-subopcao <?php echo ($activePage === 'sales') ? 'active' : ''; ?>">Pedidos</a>
+                    <?php endif; ?>
+                    <?php if (hasPermission('nfe_view', $permissions)): ?>
+                        <a href="/nexus-erp/public/fiscal"
+                            class="link-subopcao <?php echo ($activePage === 'nfe') ? 'active' : ''; ?>">Notas Fiscais</a>
+                    <?php endif; ?>
+                </div>
+            </li>
+
+            <?php
+            $isCadastrosActive = in_array($activePage, ['products', 'customers']);
+            ?>
+            <li class="item-opcao <?php echo $isCadastrosActive ? 'active' : ''; ?>">
+                <span class="link-opcao">Cadastros <span class="arrow"></span></span>
+                <div class="submenu">
+                    <?php if (hasPermission('products_view', $permissions)): ?>
+                        <a href="/nexus-erp/public/products"
+                            class="link-subopcao <?php echo ($activePage === 'products') ? 'active' : ''; ?>">Produtos</a>
+                    <?php endif; ?>
+                    <?php if (hasPermission('customers_view', $permissions)): ?>
+                        <a href="/nexus-erp/public/customers"
+                            class="link-subopcao <?php echo ($activePage === 'customers') ? 'active' : ''; ?>">Clientes</a>
+                    <?php endif; ?>
+                </div>
+            </li>
+
+
+            <?php
+            // 1. Verifica se a página ativa é 'reports' (para o menu)
+            $isRelatoriosActive = ($activePage === 'reports');
+            ?>
+            <?php if (hasPermission('reports_sales_view', $permissions)): ?>
+                <li class="item-opcao <?php echo $isRelatoriosActive ? 'active' : ''; ?>">
+                    <span class="link-opcao">Relatórios <span class="arrow"></span></span>
+                    <div class="submenu">
+                        <a href="/nexus-erp/public/reports/dashboard" class="link-subopcao">Dashboard Gráfico</a>
+                        <a href="/nexus-erp/public/reports/sales" class="link-subopcao">Relatório de Vendas</a>
+                    </div>
+                </li>
+            <?php endif; ?>
+
+            <?php if (hasPermission('inventory_view', $permissions)): ?>
+                <li class="item-opcao">
+                    <a href="/nexus-erp/public/supplies"
+                        class="link-opcao <?php echo ($activePage === 'supplies') ? 'active' : ''; ?>">Suprimentos</a>
+                </li>
+            <?php endif; ?>
+
+            <?php if (hasPermission('users_manage', $permissions)): ?>
+                <li class="item-opcao">
+                    <a href="/nexus-erp/public/users"
+                        class="link-opcao <?php echo ($activePage === 'users') ? 'active' : ''; ?>">Gerenciar Usuários</a>
+                </li>
+            <?php endif; ?>
+
+        </ul>
+
+        <div class="minha-conta">
+            <a href="/nexus-erp/public/account" class="<?php echo ($activePage === 'account') ? 'active' : ''; ?>">Minha
+                conta</a>
+        </div>
+    </nav>
+
+    <?php js("js/sidebar.js", ["defer" => true]); ?>
+</body>
 <style>
-    /* ===== MENU LATERAL (sem alterações) ===== */
+    /* ===== MENU LATERAL ===== */
     .menu-lateral {
         width: 240px;
         height: 100%;
@@ -100,7 +200,8 @@
         padding-top: 0;
         padding-bottom: 0;
         margin-top: 0;
-        box-shadow: none; /* Sem sombra quando fechado */
+        box-shadow: none;
+        /* Sem sombra quando fechado */
 
         overflow: hidden;
         position: relative;
@@ -112,13 +213,17 @@
 
     /* ESTADO ATIVO (ABERTO E VISÍVEL) */
     .item-opcao.active .submenu {
-        max-height: 200px; /* Expande a altura */
+        max-height: 200px;
+        /* Expande a altura */
 
         /* Aplica os estilos para o efeito contínuo SÓ QUANDO for clicado */
-        margin-top: -10px; /* Puxa para trás do botão */
-        padding-top: 15px; /* Adiciona o espaço interno */
+        margin-top: -10px;
+        /* Puxa para trás do botão */
+        padding-top: 15px;
+        /* Adiciona o espaço interno */
         padding-bottom: 5px;
-        box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4); /* Adiciona a sombra */
+        box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);
+        /* Adiciona a sombra */
     }
 
     /* LINKS DO SUBMENU (EX: PEDIDOS) */
@@ -126,7 +231,8 @@
         display: block;
         text-decoration: none;
         color: white;
-        padding: 12px 20px; /* Mais padding para facilitar o clique */
+        padding: 12px 20px;
+        /* Mais padding para facilitar o clique */
         transition: background-color 0.3s ease;
         text-align: left;
     }
@@ -141,8 +247,30 @@
         border-bottom-right-radius: 20px;
     }
 
+    /* Define o fundo azul claro para o item de submenu ativo (ex: "Pedidos") */
+    .submenu .link-subopcao.active {
+        background-color: #2458BF;
+        /* Cor azul claro da sua imagem */
+        font-weight: 600;
+        border-radius: 8px;
+        /* Adiciona um leve arredondamento */
+    }
 
-    /* ===== MINHA CONTA (sem alterações) ===== */
+    /* Define o fundo azul claro para links principais ativos (ex: "Suprimentos") */
+    .item-opcao>a.link-opcao.active {
+        background: linear-gradient(180deg, #2458BF, #1e48a3);
+        /* Destaque azul claro */
+        font-weight: 600;
+    }
+
+    /* Define o fundo azul claro para "Minha Conta" quando ativo */
+    .minha-conta a.active {
+        background: linear-gradient(180deg, #2458BF, #1e48a3);
+        /* Destaque azul claro */
+    }
+
+
+    /* ===== MINHA CONTA ===== */
     .minha-conta {
         margin-bottom: 20px;
         width: 80%;
@@ -167,42 +295,3 @@
         transform: translateY(-2px);
     }
 </style>
-<body>
-<nav class="menu-lateral">
-    <div class="area-logo">
-        <img src="images/nexus-logo.png" alt="Logo do sistema">
-    </div>
-
-    <ul class="lista-opcoes">
-        <li class="item-opcao">
-            <span class="link-opcao">Vendas <span class="arrow"></span></span>
-            <div class="submenu">
-                <a href="#" class="link-subopcao">Pedidos</a>
-                <a href="#" class="link-subopcao">Notas Fiscais</a>
-            </div>
-        </li>
-
-        <li class="item-opcao">
-            <span class="link-opcao">Cadastros <span class="arrow"></span></span>
-            <div class="submenu">
-                <a href="#" class="link-subopcao">Produtos</a>
-                <a href="#" class="link-subopcao">Clientes</a>
-            </div>
-        </li>
-
-        <li class="item-opcao">
-            <a href="#" class="link-opcao">Suprimentos</a>
-        </li>
-
-        <li class="item-opcao">
-            <a href="#" class="link-opcao">Relatórios</a>
-        </li>
-    </ul>
-
-    <div class="minha-conta">
-        <a href="acccount">Minha conta</a>
-    </div>
-</nav>
-
-<?php js("js/sidebar.js", ["defer" => true]); ?>
-</body>
