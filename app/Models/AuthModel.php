@@ -68,6 +68,22 @@ class AuthModel
         return $user ?: null;
     }
 
+    // ==================================
+    // == NOVO MÉTODO ADICIONADO AQUI  ==
+    // ==================================
+    /**
+     * Busca um usuário apenas pelo seu E-mail.
+     */
+    public function findByEmail($email): ?array
+    {
+        $sql = "SELECT u.* FROM users AS u WHERE u.email = :email";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $user ?: null;
+    }
+
     /**
      * Registra uma NOVA EMPRESA e seu primeiro USUÁRIO (Admin).
      */

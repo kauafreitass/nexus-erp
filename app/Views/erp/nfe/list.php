@@ -191,9 +191,9 @@
     <div class="container">
         <div class="page-header">
             <h3>Notas Fiscais (NFe)</h3>
-            <a href="/nexus-erp/public/nfe/create" class="btn-primary">
+            <!-- <a href="/nexus-erp/public/nfe/create" class="btn-primary">
                 Nova Nota
-            </a>
+            </a> -->
         </div>
 
         <?php if (isset($_SESSION['message'])): ?>

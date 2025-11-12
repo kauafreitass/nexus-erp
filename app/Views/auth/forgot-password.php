@@ -153,11 +153,11 @@
     </div>
 
     <div class="direita">
-      <form method="POST">
+      <form method="POST" action="/nexus-erp/public/forgot-password">
         <h1>Esqueci minha senha</h1>
 
-        <input placeholder="E-mail" name="email">
-        <input placeholder="Nova senha" name="nova_senha">
+        <input placeholder="E-mail" name="email" type="email">
+        <input placeholder="Nova senha" name="nova_senha" type="password">
         <button>Redefinir senha</button>
       </form>
     </div>

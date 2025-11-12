@@ -80,7 +80,7 @@ Router::get('/reports/sales', [ReportController::class, 'salesReport']);
 // Auth
 Router::get('/login', [AuthController::class, 'showLogin']);
 Router::get('/register', [AuthController::class, 'showRegister']);
-Router::get('/forgot-password', [AuthController::class, 'showForgotPassword']);
+Router::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm']);
 Router::get('/logout', [AuthController::class, 'showLogout']);
 Router::post('/login', [AuthController::class, 'handleLogin']);
 Router::post('/register', [AuthController::class, 'handleRegister']);
