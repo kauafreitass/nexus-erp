@@ -6,7 +6,8 @@ use PDO;
 use Exception;
 use PDOException;
 
-class CustomerModel {
+class CustomerModel
+{
 
     private $pdo;
 
@@ -25,7 +26,7 @@ class CustomerModel {
                 FROM customers 
                 WHERE company_id = ? 
                 ORDER BY name";
-        
+
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$companyId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -41,7 +42,7 @@ class CustomerModel {
         $stmt->execute([$customerId, $companyId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    
+
     /**
      * API: (Read) Busca clientes pelo nome ou documento DENTRO DA EMPRESA.
      */
@@ -52,7 +53,7 @@ class CustomerModel {
                 WHERE company_id = :company_id 
                   AND (name LIKE :query OR document_number LIKE :query)
                 LIMIT 10";
-        
+
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':company_id' => $companyId,
@@ -79,9 +80,9 @@ class CustomerModel {
                     :address_neighborhood, :address_city, :address_state, :address_zipcode, 
                     '1058'
                 )";
-        
+
         $stmt = $this->pdo->prepare($sql);
-        
+
         try {
             $stmt->execute([
                 ':company_id' => $companyId,
@@ -133,10 +134,10 @@ class CustomerModel {
                     address_state = :address_state,
                     address_zipcode = :address_zipcode
                 WHERE
-                    id = :customer_id AND company_id = :company_id"; 
-        
+                    id = :customer_id AND company_id = :company_id";
+
         $stmt = $this->pdo->prepare($sql);
-        
+
         try {
             $stmt->execute([
                 ':name' => $data['name'],
@@ -165,7 +166,7 @@ class CustomerModel {
             throw $e;
         }
     }
-    
+
     /**
      * D: (Delete) Exclui um cliente da EMPRESA.
      */
@@ -193,11 +194,8 @@ class CustomerModel {
         return $stmt->execute([$customerId, $companyId]);
     }
 
-    
+
     /**
-     * ==========================================================
-     * * FUNÇÃO FALTANTE ADICIONADA AQUI
-     * * ==========================================================
      *
      * R: (Read) Busca dados de novos clientes por mês para o gráfico do dashboard.
      */
@@ -216,21 +214,56 @@ class CustomerModel {
                     mes
                 ORDER BY 
                     mes ASC";
-        
+
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$companyId]);
-        
+
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         // Formata para o Google Charts
         $data = [['Mês', 'Novos Clientes']];
         foreach ($results as $row) {
-            $data[] = [$row['mes'], (int)$row['novos_clientes']];
+            $data[] = [$row['mes'], (int) $row['novos_clientes']];
         }
-        
+
         // Se não houver dados, retorna um placeholder
         if (count($data) === 1) {
             $data[] = ['Nenhum', 0];
+        }
+        return $data;
+    }
+    /**
+     * NOVO: Retorna os Top N Clientes por Valor de Venda para o gráfico.
+     * @param int $companyId O ID da empresa.
+     * @param int $limit O número de clientes a retornar (padrão: 5).
+     * @return array Dados formatados para o Google Charts.
+     */
+    public function getTopCustomersForChart($companyId, $limit = 5)
+    {
+        $sql = "SELECT 
+                    c.name AS customer_name,
+                    SUM(so.total_amount) AS total_spent
+                FROM customers AS c
+                JOIN sales_orders AS so ON c.id = so.customer_id
+                WHERE so.company_id = :company_id
+                  AND so.status IN ('CONFIRMED', 'INVOICED') -- Apenas vendas efetivadas
+                GROUP BY c.id, c.name
+                ORDER BY total_spent DESC
+                LIMIT :limit";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':company_id', $companyId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $data = [['Cliente', 'Valor Gasto']];
+        if (empty($results)) {
+            $data[] = ['Nenhum cliente', 0];
+            return $data;
+        }
+        foreach ($results as $row) {
+            $data[] = [$row['customer_name'], (float) $row['total_spent']];
         }
         return $data;
     }

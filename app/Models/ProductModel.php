@@ -233,4 +233,40 @@ class ProductModel {
         }
         return $data;
     }
+    /**
+     * NOVO: Retorna os Top N Produtos/Serviços Mais Vendidos por Valor para o gráfico.
+     * @param int $companyId O ID da empresa.
+     * @param int $limit O número de produtos a retornar (padrão: 5).
+     * @return array Dados formatados para o Google Charts.
+     */
+    public function getTopSellingProductsForChart($companyId, $limit = 5)
+    {
+        $sql = "SELECT 
+                    p.description AS product_description,
+                    SUM(soi.total_price) AS total_revenue
+                FROM products AS p
+                JOIN sales_order_items AS soi ON p.id = soi.product_id
+                JOIN sales_orders AS so ON soi.sales_order_id = so.id
+                WHERE p.company_id = :company_id
+                  AND so.status IN ('CONFIRMED', 'INVOICED') -- Apenas vendas efetivadas
+                GROUP BY p.id, p.description
+                ORDER BY total_revenue DESC
+                LIMIT :limit";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':company_id', $companyId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $data = [['Produto/Serviço', 'Receita Gerada']];
+        if (empty($results)) {
+            $data[] = ['Nenhum produto', 0];
+            return $data;
+        }
+        foreach ($results as $row) {
+            $data[] = [$row['product_description'], (float)$row['total_revenue']];
+        }
+        return $data;
+    }
 }

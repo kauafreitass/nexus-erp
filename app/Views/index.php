@@ -133,8 +133,8 @@ if (!isset($_SESSION['auth'])) {
         </div>
 
         <div class="botoes">
-            <a href="#">Sobre</a>
-            <a href="#">Contato</a>
+            <!-- <a href="#">Sobre</a>
+            <a href="#">Contato</a> -->
             <a class='decoracao' href="login">Entrar</a>
         </div>
 

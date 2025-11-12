@@ -102,7 +102,7 @@ class AuthController extends BaseController // <-- 1. HERDA DO BASECONTROLLER
             $_SESSION['company_id'] = $user['company_id']; 
             $_SESSION['role_name'] = $user['role_name'];   
 
-            $this->redirectWithSuccess("/nexus-erp/public/dashboard", "Login bem-sucedido! Bem-vindo(a), " . htmlspecialchars($user['name']) . ".");
+            $this->redirectWithSuccess("/nexus-erp/public/dashboard", message: "");
 
         } catch (Exception $e) {
             $this->redirectWithError("/nexus-erp/public/login", $e->getMessage());

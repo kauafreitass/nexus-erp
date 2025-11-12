@@ -44,7 +44,7 @@ class NfeController extends BaseController {
         $nota = $this->nfeModel->findByIdAndHierarchy($nfeId, $companyId, $userId, $roleName);
         
         if (!$nota) {
-            $this->redirectWithError("/nexus-erp/public/fiscal", "Nota Fiscal não encontrada ou inacessível.");
+            $this->redirectWithError("/nexus-erp/public/nfe", "Nota Fiscal não encontrada ou inacessível.");
             return;
         }
         
@@ -73,7 +73,7 @@ class NfeController extends BaseController {
 
         try {
             $nfeId = $this->nfeModel->createFromOrder($orderId, $userId, $companyId, $roleName);
-            $this->redirectWithSuccess("/nexus-erp/public/fiscal/details?id=" . $nfeId, "NFe gerada com sucesso!");
+            $this->redirectWithSuccess("/nexus-erp/public/nfe/details?id=" . $nfeId, "NFe gerada com sucesso!");
         } catch (Exception $e) {
             $this->redirectWithError("/nexus-erp/public/sales/details?id=" . $orderId, "Erro ao gerar NFe: " . $e->getMessage());
         }
@@ -92,9 +92,9 @@ class NfeController extends BaseController {
 
         try {
             $this->nfeModel->cancelNfe($nfeId, $companyId, $userId, $roleName);
-            $this->redirectWithSuccess("/nexus-erp/public/fiscal/details?id=" . $nfeId, "NFe cancelada com sucesso.");
+            $this->redirectWithSuccess("/nexus-erp/public/nfe/details?id=" . $nfeId, "NFe cancelada com sucesso.");
         } catch (Exception $e) {
-            $this->redirectWithError("/nexus-erp/public/fiscal/details?id=" . $nfeId, "Erro ao cancelar: " . $e->getMessage());
+            $this->redirectWithError("/nexus-erp/public/nfe/details?id=" . $nfeId, "Erro ao cancelar: " . $e->getMessage());
         }
     }
 }

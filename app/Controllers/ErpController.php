@@ -26,7 +26,7 @@ class ErpController extends BaseController { // Extende BaseController
     public function index() {
         // Redireciona para o login se não estiver logado, ou dashboard se estiver
         if (!isset($_SESSION['auth']) || $_SESSION['auth'] !== 'authenticated') {
-            header('Location: /nexus-erp/public/login');
+            view('index');
         } else {
             header('Location: /nexus-erp/public/dashboard');
         }

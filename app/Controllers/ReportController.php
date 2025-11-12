@@ -1,7 +1,7 @@
 <?php
 namespace App\Controllers;
 
-use App\Models\InventoryModel;
+use App\Models\InventoryModel; // Manter, caso você adicione um gráfico de estoque futuramente
 use App\Models\OrderModel;
 use App\Models\ProductModel;
 use App\Models\CustomerModel;
@@ -21,24 +21,29 @@ class ReportController extends BaseController {
         $this->customerModel = new CustomerModel();
     }
     
+    /**
+     * Rota: GET /reports  E  GET /reports/dashboard
+     * Exibe o dashboard de relatórios gráficos.
+     */
     public function dashboard() {
-        // Protege a rota.
         $this->checkPermission('reports_sales_view'); 
         
         $companyId = $_SESSION['company_id'];
         
-        $salesChartData = $this->orderModel->getSalesDataForChart($companyId);
-        $productsChartData = $this->productModel->getProductStatusForChart($companyId);
-        $stockChartData = $this->inventoryModel->getStockDataForChart($companyId);
-        $customerChartData = $this->customerModel->getCustomerDataForChart($companyId);
+        // --- NOVOS DADOS PARA O DASHBOARD DE RELATÓRIOS ---
+        $salesByStatusChartData = $this->orderModel->getSalesByStatusForChart($companyId);
+        $totalSalesByMonthChartData = $this->orderModel->getTotalSalesByMonthForChart($companyId);
+        $topCustomersChartData = $this->customerModel->getTopCustomersForChart($companyId);
+        $topSellingProductsChartData = $this->productModel->getTopSellingProductsForChart($companyId);
+        // --- FIM DOS NOVOS DADOS ---
         
-        // Carrega a view que você tem: erp/reports/dashboard.php
         view('erp/reports/dashboard', [
             'activePage' => 'reports',
-            'salesChartData' => $salesChartData,
-            'productsChartData' => $productsChartData,
-            'stockChartData' => $stockChartData, 
-            'customerChartData' => $customerChartData
+            'salesByStatusChartData' => $salesByStatusChartData,
+            'totalSalesByMonthChartData' => $totalSalesByMonthChartData,
+            'topCustomersChartData' => $topCustomersChartData,
+            'topSellingProductsChartData' => $topSellingProductsChartData
+            // Removemos os dados antigos que eram iguais ao dashboard principal
         ]);
     }
 

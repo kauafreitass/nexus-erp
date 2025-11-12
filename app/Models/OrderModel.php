@@ -345,4 +345,73 @@ class OrderModel {
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getSalesByStatusForChart($companyId)
+    {
+        $sql = "SELECT 
+                    CASE
+                        WHEN status = 'DRAFT' THEN 'Rascunho'
+                        WHEN status = 'CONFIRMED' THEN 'Confirmado'
+                        WHEN status = 'INVOICED' THEN 'Faturado'
+                        WHEN status = 'CANCELED' THEN 'Cancelado'
+                        ELSE 'Outro'
+                    END AS status_label,
+                    COUNT(id) AS order_count,
+                    SUM(total_amount) AS total_value
+                FROM sales_orders
+                WHERE company_id = ?
+                GROUP BY status_label
+                ORDER BY FIELD(status_label, 'Faturado', 'Confirmado', 'Rascunho', 'Cancelado', 'Outro')";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$companyId]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $data = [['Status', 'Número de Pedidos', 'Valor Total']];
+        if (empty($results)) {
+            $data[] = ['Nenhum dado', 0, 0];
+            return $data;
+        }
+        foreach ($results as $row) {
+            $data[] = [$row['status_label'], (int)$row['order_count'], (float)$row['total_value']];
+        }
+        return $data;
+    }
+
+    /**
+     * Retorna dados de Vendas Totais por Mês para o gráfico de linha.
+     * Considera os últimos 12 meses.
+     */
+    public function getTotalSalesByMonthForChart($companyId)
+    {
+        $sql = "SELECT 
+                    DATE_FORMAT(order_date, '%Y-%m') AS sale_month,
+                    SUM(total_amount) AS monthly_sales
+                FROM sales_orders
+                WHERE company_id = :company_id
+                  AND status IN ('CONFIRMED', 'INVOICED') -- Apenas vendas efetivadas
+                  AND order_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+                GROUP BY sale_month
+                ORDER BY sale_month ASC";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':company_id' => $companyId]);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Gera um array com os últimos 12 meses, preenchendo com 0 se não houver vendas
+        $months = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $months[date('Y-m', strtotime("-$i month"))] = 0;
+        }
+
+        foreach ($results as $row) {
+            $months[$row['sale_month']] = (float)$row['monthly_sales'];
+        }
+
+        $data = [['Mês', 'Vendas']];
+        foreach ($months as $month => $sales) {
+            $data[] = [$month, $sales];
+        }
+        return $data;
+    }
 }

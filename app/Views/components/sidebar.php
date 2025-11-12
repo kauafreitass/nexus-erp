@@ -36,7 +36,7 @@ function hasPermission($permissionName, $permissionsArray)
                             class="link-subopcao <?php echo ($activePage === 'sales') ? 'active' : ''; ?>">Pedidos</a>
                     <?php endif; ?>
                     <?php if (hasPermission('nfe_view', $permissions)): ?>
-                        <a href="/nexus-erp/public/fiscal"
+                        <a href="/nexus-erp/public/nfe"
                             class="link-subopcao <?php echo ($activePage === 'nfe') ? 'active' : ''; ?>">Notas Fiscais</a>
                     <?php endif; ?>
                 </div>
