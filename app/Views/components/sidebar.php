@@ -52,6 +52,10 @@ function hasPermission($permissionName, $permissionsArray)
                         <a href="/nexus-erp/public/products"
                             class="link-subopcao <?php echo ($activePage === 'products') ? 'active' : ''; ?>">Produtos</a>
                     <?php endif; ?>
+                    <?php if (hasPermission('products_view', $permissions)): ?>
+                        <a href="/nexus-erp/public/categories"
+                            class="link-subopcao <?php echo ($activePage === 'categories') ? 'active' : ''; ?>">Categorias</a>
+                    <?php endif; ?>
                     <?php if (hasPermission('customers_view', $permissions)): ?>
                         <a href="/nexus-erp/public/customers"
                             class="link-subopcao <?php echo ($activePage === 'customers') ? 'active' : ''; ?>">Clientes</a>

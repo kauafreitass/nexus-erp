@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 require_once __DIR__ . '/../core/Helpers.php';
 require_once __DIR__ . '/../core/Router.php';
@@ -13,6 +14,7 @@ use App\Controllers\ProductController;
 use App\Controllers\InventoryController;
 use App\Controllers\UserController;
 use App\Controllers\ReportController;
+use App\Controllers\ProductCategoryController;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -67,6 +69,11 @@ Router::get('/products/edit', [ProductController::class, 'showEditForm']);
 Router::post('/products/update', [ProductController::class, 'update']);
 Router::post('/products/delete', [ProductController::class, 'delete']);
 
+Router::get('/categories', [ProductCategoryController::class, 'list']);
+Router::post('/categories/store', [ProductCategoryController::class, 'store']);
+Router::post('/categories/update', [ProductCategoryController::class, 'update']);
+Router::post('/categories/delete', [ProductCategoryController::class, 'delete']);
+
 // Estoque
 Router::get('/supplies', [InventoryController::class, 'list']);
 Router::get('/supplies/details', [InventoryController::class, 'showDetails']);
@@ -97,3 +104,8 @@ Router::post('/users/delete', [UserController::class, 'delete']);
 // Settings
 Router::get('/account', [AuthController::class, 'showAccount']);
 Router::post('/account/update', [AuthController::class, 'update']);
+
+Router::get('/*', function() {
+    http_response_code(response_code: 404);
+    echo "404 Not Found";
+});

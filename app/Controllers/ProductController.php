@@ -2,15 +2,18 @@
 namespace App\Controllers;
 
 use App\Models\ProductModel;
+use App\Models\ProductCategoryModel; // 1. IMPORTADO
 use Exception;
 
 class ProductController extends BaseController 
 {
     private ProductModel $model;
+    private ProductCategoryModel $categoryModel; // 2. DECLARADO
 
     public function __construct()
     {
         $this->model = new ProductModel();
+        $this->categoryModel = new ProductCategoryModel(); // 3. INSTANCIADO
     }
 
     /**
@@ -35,8 +38,14 @@ class ProductController extends BaseController
     public function showCreateForm(): void
     {
         $this->checkPermission('products_manage');
+        
+        // 4. BUSCA CATEGORIAS
+        $companyId = $_SESSION['company_id'];
+        $categories = $this->categoryModel->findAllByCompany($companyId);
+        
         view('erp/products/create', [
-            'activePage' => 'products'
+            'activePage' => 'products',
+            'categories' => $categories // 5. ENVIA PARA VIEW
         ]);
     }
 
@@ -54,6 +63,8 @@ class ProductController extends BaseController
             $this->model->store($userId, $companyId, $_POST);
             $this->redirectWithSuccess("/nexus-erp/public/products", "Produto criado com sucesso!");
         } catch (Exception $e) {
+            // 6. SALVA DADOS DO FORM EM CASO DE ERRO
+            $_SESSION['form_data'] = $_POST; 
             $this->redirectWithError("/nexus-erp/public/products/create", $e->getMessage());
         }
     }
@@ -74,9 +85,13 @@ class ProductController extends BaseController
             return;
         }
 
+        // 7. BUSCA CATEGORIAS
+        $categories = $this->categoryModel->findAllByCompany($companyId);
+
         view('erp/products/edit', [
             'activePage' => 'products',
-            'product' => $product
+            'product' => $product,
+            'categories' => $categories // 8. ENVIA PARA VIEW
         ]);
     }
 

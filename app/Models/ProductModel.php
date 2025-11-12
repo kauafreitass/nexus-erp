@@ -21,10 +21,19 @@ class ProductModel {
      */
     public function findAllByCompanyId($companyId)
     {
-        $sql = "SELECT id, description, sku, type, unit_of_measure, cost_price, sale_price 
-                FROM products 
-                WHERE company_id = ? 
-                ORDER BY description";
+        // ATUALIZADO: Adicionado LEFT JOIN com product_categories
+        $sql = "SELECT 
+                    p.id, p.description, p.sku, p.type, p.unit_of_measure, 
+                    p.cost_price, p.sale_price,
+                    pc.name AS category_name 
+                FROM 
+                    products AS p
+                LEFT JOIN 
+                    product_categories AS pc ON p.product_category_id = pc.id
+                WHERE 
+                    p.company_id = ? 
+                ORDER BY 
+                    p.description";
         
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$companyId]);
@@ -86,20 +95,28 @@ class ProductModel {
     {
         $this->validateProductData($data); // Executa a validação
         
+        // ATUALIZADO: Adicionado 'product_category_id'
         $sql = "INSERT INTO products (
-                    company_id, user_id, description, sku, type, ncm_code, 
+                    company_id, user_id, product_category_id, 
+                    description, sku, type, ncm_code, 
                     cest_code, unit_of_measure, cost_price, sale_price
                 ) VALUES (
-                    :company_id, :user_id, :description, :sku, :type, :ncm_code, 
+                    :company_id, :user_id, :product_category_id, 
+                    :description, :sku, :type, :ncm_code, 
                     :cest_code, :unit_of_measure, :cost_price, :sale_price
                 )";
         
         $stmt = $this->pdo->prepare($sql);
         
+        // Trata categoria vazia como NULL
+        $categoryId = !empty($data['product_category_id']) ? $data['product_category_id'] : null;
+
         try {
+            // ATUALIZADO: Adicionado ':product_category_id'
             $stmt->execute([
                 ':company_id' => $companyId,
                 ':user_id' => $userId,
+                ':product_category_id' => $categoryId,
                 ':description' => $data['description'],
                 ':sku' => $data['sku'],
                 ':type' => $data['type'],
@@ -125,7 +142,9 @@ class ProductModel {
     {
         $this->validateProductData($data); // Executa a validação
 
+        // ATUALIZADO: Adicionado 'product_category_id'
         $sql = "UPDATE products SET
+                    product_category_id = :product_category_id,
                     description = :description,
                     sku = :sku,
                     type = :type,
@@ -139,8 +158,13 @@ class ProductModel {
         
         $stmt = $this->pdo->prepare($sql);
         
+        // Trata categoria vazia como NULL
+        $categoryId = !empty($data['product_category_id']) ? $data['product_category_id'] : null;
+
         try {
+            // ATUALIZADO: Adicionado ':product_category_id'
             $stmt->execute([
+                ':product_category_id' => $categoryId,
                 ':description' => $data['description'],
                 ':sku' => $data['sku'],
                 ':type' => $data['type'],

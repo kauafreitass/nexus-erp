@@ -2,6 +2,7 @@
 // O Controller deve definir:
 // $activePage
 // $product (array com dados do produto)
+// $categories (array)
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -49,7 +50,7 @@
             <h1>Editar Produto</h1>
             <a href="/nexus-erp/public/products" class="btn-voltar">Voltar</a>
         </div>
-
+        
         <form method="POST" action="/nexus-erp/public/products/update">
             <input type="hidden" name="product_id" value="<?php echo htmlspecialchars($product['id']); ?>">
 
@@ -73,6 +74,21 @@
                             </select>
                         </div>
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="product_category_id">Categoria</label>
+                        <select id="product_category_id" name="product_category_id">
+                            <option value="">-- Sem Categoria --</option>
+                            <?php if (!empty($categories)): ?>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?php echo $category['id']; ?>" <?php echo (($product['product_category_id'] ?? '') == $category['id']) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($category['name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+
                 </div>
             </div>
             

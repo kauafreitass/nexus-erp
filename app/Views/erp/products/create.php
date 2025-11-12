@@ -1,3 +1,12 @@
+<?php
+// O Controller agora define:
+// $activePage
+// $categories (array)
+
+// 1. RECUPERA DADOS ANTIGOS EM CASO DE ERRO DE VALIDAÇÃO
+$old = $_SESSION['form_data'] ?? [];
+unset($_SESSION['form_data']);
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -44,28 +53,43 @@
             <h1>Novo Produto</h1>
             <a href="/nexus-erp/public/products" class="btn-voltar">Voltar</a>
         </div>
-
+        
         <form method="POST" action="/nexus-erp/public/products/store">
             <div class="card">
                 <div class="card-header">Informações Principais</div>
                 <div class="form-container form-grid">
                     <div class="form-group">
                         <label for="description">Descrição*</label>
-                        <input type="text" id="description" name="description" required>
+                        <input type="text" id="description" name="description" value="<?php echo htmlspecialchars($old['description'] ?? ''); ?>" required>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="sku">SKU (Código)*</label>
-                            <input type="text" id="sku" name="sku" required>
+                            <input type="text" id="sku" name="sku" value="<?php echo htmlspecialchars($old['sku'] ?? ''); ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="type">Tipo*</label>
                             <select id="type" name="type" required>
-                                <option value="PRODUCT">Produto</option>
-                                <option value="SERVICE">Serviço</option>
+                                <option value="PRODUCT" <?php echo (($old['type'] ?? 'PRODUCT') == 'PRODUCT') ? 'selected' : ''; ?>>Produto</option>
+                                <option value="SERVICE" <?php echo (($old['type'] ?? '') == 'SERVICE') ? 'selected' : ''; ?>>Serviço</option>
                             </select>
                         </div>
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="product_category_id">Categoria</label>
+                        <select id="product_category_id" name="product_category_id">
+                            <option value="">-- Sem Categoria --</option>
+                            <?php if (!empty($categories)): ?>
+                                <?php foreach ($categories as $category): ?>
+                                    <option value="<?php echo $category['id']; ?>" <?php echo (($old['product_category_id'] ?? '') == $category['id']) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($category['name']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
+
                 </div>
             </div>
             
@@ -75,25 +99,25 @@
                     <div class="form-row-3">
                         <div class="form-group">
                             <label for="ncm_code">NCM*</label>
-                            <input type="text" id="ncm_code" name="ncm_code" maxlength="8" required>
+                            <input type="text" id="ncm_code" name="ncm_code" maxlength="8" value="<?php echo htmlspecialchars($old['ncm_code'] ?? ''); ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="cest_code">CEST (se aplicável)</label>
-                            <input type="text" id="cest_code" name="cest_code" maxlength="7">
+                            <input type="text" id="cest_code" name="cest_code" maxlength="7" value="<?php echo htmlspecialchars($old['cest_code'] ?? ''); ?>">
                         </div>
                         <div class="form-group">
                             <label for="unit_of_measure">Unidade (UN, KG, CX)*</label>
-                            <input type="text" id="unit_of_measure" name="unit_of_measure" maxlength="6" required>
+                            <input type="text" id="unit_of_measure" name="unit_of_measure" maxlength="6" value="<?php echo htmlspecialchars($old['unit_of_measure'] ?? ''); ?>" required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label for="cost_price">Preço de Custo*</label>
-                            <input type="number" id="cost_price" name="cost_price" step="0.01" min="0" value="0.00" required>
+                            <input type="number" id="cost_price" name="cost_price" step="0.01" min="0" value="<?php echo htmlspecialchars($old['cost_price'] ?? '0.00'); ?>" required>
                         </div>
                         <div class="form-group">
                             <label for="sale_price">Preço de Venda*</label>
-                            <input type="number" id="sale_price" name="sale_price" step="0.01" min="0" value="0.00" required>
+                            <input type="number" id="sale_price" name="sale_price" step="0.01" min="0" value="<?php echo htmlspecialchars($old['sale_price'] ?? '0.00'); ?>" required>
                         </div>
                     </div>
                 </div>

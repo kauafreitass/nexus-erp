@@ -19,6 +19,7 @@
         body {
             height: 100%;
             background-color: #050B1F;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         .logo {
@@ -129,13 +130,13 @@
                     <h1>Cadastro</h1>
                 </div>
                 <form class="caixa" method="POST" action="register">
-                <input type="text" name="name" placeholder="Nome">
-                <input type="text" name="business_name" placeholder="Razão Social">
-                <input type="text" name="email" placeholder="E-mail">
-                <input type="password" name="password" placeholder="Senha">
-                <input type="text" name="document_number" placeholder="CNPJ">
-                <input type="number" name="phone" placeholder="Telefone">
-                <button type="submit">Cadastrar</button>
+                    <input type="text" name="name" placeholder="Nome">
+                    <input type="text" name="business_name" placeholder="Razão Social">
+                    <input type="text" name="email" placeholder="E-mail">
+                    <input type="password" name="password" placeholder="Senha">
+                    <input type="text" name="document_number" placeholder="CNPJ">
+                    <input type="number" name="phone" placeholder="Telefone">
+                    <button type="submit">Cadastrar</button>
                 </form>
 
                 <div class="cadastrar">

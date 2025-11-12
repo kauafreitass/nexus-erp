@@ -19,6 +19,7 @@
         body {
             height: 100%;
             background-color: #050B1F;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         .logo {
@@ -180,10 +181,10 @@
                     <input type="text" name="email" placeholder="E-mail">
                     <input type="password" name="password" placeholder="Senha">
                     <?php if (isset($_SESSION['error'])): ?>
-                    <div class="error">
-                        <p><?= $_SESSION['error'] ?? '' ?></p>
-                    </div>
-                    <?php unset($_SESSION['error']); endif; ?>
+                        <div class="error">
+                            <p><?= $_SESSION['error'] ?? '' ?></p>
+                        </div>
+                        <?php unset($_SESSION['error']); endif; ?>
                     <p class="esqueci-senha"><a href="forgot-password">Esqueci minha senha</a></p>
 
                     <button type="submit">Entrar</button>

@@ -22,7 +22,10 @@ if (!isset($_SESSION['auth'])) {
             background-size: cover;
             background-repeat: no-repeat;
             background-position: absolute;
-
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
         }
 
         navbar {
@@ -38,7 +41,7 @@ if (!isset($_SESSION['auth'])) {
             margin-top: 10px;
             background-color: white;
             border-radius: 20px;
-          
+
         }
 
         .botoes {
@@ -111,12 +114,12 @@ if (!isset($_SESSION['auth'])) {
             border: none;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             margin-top: -5px;
-        
+
         }
 
         .botao:hover {
             background-color: #1e4ac9;
-      
+
         }
     </style>
 
